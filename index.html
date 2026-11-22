@@ -46,15 +46,12 @@
             overflow-x: auto;
             scroll-snap-type: x mandatory;
             scroll-behavior: smooth;
-            -ms-overflow-style: none;  /* Скрываем скроллбар в IE и Edge */
-            scrollbar-width: none;  /* Скрываем скроллбар в Firefox */
+            -ms-overflow-style: none;
+            scrollbar-width: none;
             border-radius: 12px;
         }
         
-        /* Скрываем скроллбар в Chrome/Safari */
-        .carousel-track::-webkit-scrollbar {
-            display: none;
-        }
+        .carousel-track::-webkit-scrollbar { display: none; }
 
         .carousel-slide {
             min-width: 100%;
@@ -64,9 +61,12 @@
             background: #000;
             display: block;
             object-fit: cover;
+            cursor: pointer; /* Курсор-рука для клика */
+            transition: transform 0.2s;
         }
+        
+        .carousel-slide:hover { transform: scale(1.01); }
 
-        /* Кнопки навигации */
         .carousel-btn {
             position: absolute;
             top: 50%;
@@ -108,6 +108,77 @@
             border: none; 
             margin: 50px 0; 
         }
+
+        /* ========================================= */
+        /* --- СТИЛИ ДЛЯ ПОЛНОЭКРАННОЙ ГАЛЕРЕИ --- */
+        /* ========================================= */
+        .lightbox {
+            display: none; 
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .lightbox.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .lightbox-img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            object-fit: contain;
+        }
+
+        .lightbox-close, .lightbox-prev, .lightbox-next {
+            position: absolute;
+            color: #fff;
+            cursor: pointer;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+            user-select: none;
+        }
+
+        .lightbox-close:hover, .lightbox-prev:hover, .lightbox-next:hover { background: rgba(255,255,255,0.3); }
+
+        .lightbox-close {
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            font-size: 30px;
+        }
+
+        .lightbox-prev, .lightbox-next {
+            top: 50%;
+            transform: translateY(-50%);
+            width: 60px;
+            height: 60px;
+            font-size: 30px;
+        }
+
+        .lightbox-prev { left: 20px; }
+        .lightbox-next { right: 20px; }
+
+        @media (max-width: 600px) {
+            .lightbox-prev, .lightbox-next { width: 40px; height: 40px; font-size: 20px; }
+            .lightbox-close { width: 40px; height: 40px; font-size: 24px; }
+        }
     </style>
 </head>
 <body>
@@ -123,15 +194,15 @@
                 
                 <!-- Трек с картинками -->
                 <div class="carousel-track" id="slider">
-                    <!-- Замени ссылки ниже на свои картинки. Для GitHub Pages лучше положить их в папку с index.html -->
-                    <img src="https://github.com/AMA-gd/IronSport/releases/download/1.0/1.png" class="carousel-slide" alt="Скриншот 1">
-                    <img src="https://github.com/AMA-gd/IronSport/releases/download/1.0/2.png" class="carousel-slide" alt="Скриншот 2">
-                    <img src="https://github.com/AMA-gd/IronSport/releases/download/1.0/3.png" class="carousel-slide" alt="Скриншот 3">
-                    <img src="https://github.com/AMA-gd/IronSport/releases/download/1.0/4.png" class="carousel-slide" alt="Скриншот 3">
-                    <img src="https://github.com/AMA-gd/IronSport/releases/download/1.0/5.png" class="carousel-slide" alt="Скриншот 3">
-                    <img src="https://github.com/AMA-gd/IronSport/releases/download/1.0/6.png" class="carousel-slide" alt="Скриншот 3">
-                    <img src="https://github.com/AMA-gd/IronSport/releases/download/1.0/7.png" class="carousel-slide" alt="Скриншот 3">
-                    <img src="https://github.com/AMA-gd/IronSport/releases/download/1.0/8.png" class="carousel-slide" alt="Скриншот 3">
+                    <!-- Добавлены onclick события для открытия галереи -->
+                    <img src="https://github.com/AMA-gd/IronSport/releases/download/1.0/1.png" class="carousel-slide" alt="Скриншот 1" onclick="openLightbox(0)">
+                    <img src="https://github.com/AMA-gd/IronSport/releases/download/1.0/2.png" class="carousel-slide" alt="Скриншот 2" onclick="openLightbox(1)">
+                    <img src="https://github.com/AMA-gd/IronSport/releases/download/1.0/3.png" class="carousel-slide" alt="Скриншот 3" onclick="openLightbox(2)">
+                    <img src="https://github.com/AMA-gd/IronSport/releases/download/1.0/4.png" class="carousel-slide" alt="Скриншот 4" onclick="openLightbox(3)">
+                    <img src="https://github.com/AMA-gd/IronSport/releases/download/1.0/5.png" class="carousel-slide" alt="Скриншот 5" onclick="openLightbox(4)">
+                    <img src="https://github.com/AMA-gd/IronSport/releases/download/1.0/6.png" class="carousel-slide" alt="Скриншот 6" onclick="openLightbox(5)">
+                    <img src="https://github.com/AMA-gd/IronSport/releases/download/1.0/7.png" class="carousel-slide" alt="Скриншот 7" onclick="openLightbox(6)">
+                    <img src="https://github.com/AMA-gd/IronSport/releases/download/1.0/8.png" class="carousel-slide" alt="Скриншот 8" onclick="openLightbox(7)">
                 </div>
                 
                 <button class="carousel-btn next" onclick="moveSlide(1)">&#10095;</button>
@@ -149,19 +220,72 @@
 
     </div>
 
-    <!-- Скрипт для работы стрелочек карусели -->
+    <!-- ================= ПОЛНОЭКРАННАЯ ГАЛЕРЕЯ (LIGHTBOX) ================= -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+        <button class="lightbox-prev" onclick="changeLightboxImage(-1)">&#10094;</button>
+        <img class="lightbox-img" id="lightbox-img" src="" alt="Увеличенный скриншот">
+        <button class="lightbox-next" onclick="changeLightboxImage(1)">&#10095;</button>
+    </div>
+
+    <!-- ================= СКРИПТЫ ================= -->
     <script>
+        // --- Логика обычной карусели ---
         function moveSlide(direction) {
             const slider = document.getElementById('slider');
-            // Вычисляем ширину одного слайда (включая отступы, если они есть)
             const slideWidth = slider.clientWidth; 
-            
-            // Прокручиваем контейнер влево или вправо
             slider.scrollBy({
                 left: direction * slideWidth,
                 behavior: 'smooth'
             });
         }
+
+        // --- Логика полноэкранной галереи (Lightbox) ---
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        
+        // Получаем все картинки из карусели
+        const carouselImages = document.querySelectorAll('.carousel-slide');
+        let currentImageIndex = 0;
+
+        function openLightbox(index) {
+            currentImageIndex = index;
+            lightboxImg.src = carouselImages[index].src;
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Запрещаем скролл фона
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto'; // Возвращаем скролл
+            
+            // Синхронизация: прокручиваем основную карусель к той картинке, на которой закрыли
+            const slider = document.getElementById('slider');
+            slider.scrollTo({ left: currentImageIndex * slider.clientWidth, behavior: 'smooth' });
+        }
+
+        function changeLightboxImage(direction) {
+            currentImageIndex += direction;
+            
+            // Если дошли до конца, переключаемся на начало (циклично)
+            if (currentImageIndex >= carouselImages.length) currentImageIndex = 0;
+            if (currentImageIndex < 0) currentImageIndex = carouselImages.length - 1;
+            
+            lightboxImg.src = carouselImages[currentImageIndex].src;
+        }
+
+        // Закрытие по клику на темный фон
+        lightbox.addEventListener('click', function(e) {
+            if (e.target === lightbox) closeLightbox();
+        });
+
+        // Управление с клавиатуры (стрелки и Esc)
+        document.addEventListener('keydown', function(e) {
+            if (!lightbox.classList.contains('active')) return;
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowLeft') changeLightboxImage(-1);
+            if (e.key === 'ArrowRight') changeLightboxImage(1);
+        });
     </script>
 </body>
 </html>
